@@ -5,9 +5,9 @@ package app
 import (
 	"runtime/debug"
 
-	"gitee.com/zhenxinma/golib/pkg/utils"
-	"gitee.com/zhenxinma/golib/pkg/xlogging"
 	"github.com/gin-gonic/gin"
+	"github.com/xmopen/golib/pkg/utils"
+	"github.com/xmopen/golib/pkg/xlogging"
 )
 
 const (

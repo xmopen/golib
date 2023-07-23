@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"gitee.com/zhenxinma/golib/pkg/xlogging"
+	"github.com/xmopen/golib/pkg/xlogging"
 )
 
 type Student struct {
