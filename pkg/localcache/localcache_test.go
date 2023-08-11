@@ -20,7 +20,7 @@ func TestLocalCache(t *testing.T) {
 		return &Student{
 			name: name,
 		}, nil
-	}, 3, 1*time.Minute)
+	}, 3, 10*time.Second)
 	test := []struct {
 		key   string
 		param any
@@ -62,7 +62,7 @@ func TestLocalCache(t *testing.T) {
 			t.Errorf("cache obj not want,cache:[%+v] want:[%+v]", val, item.want)
 		}
 	}
-	time.Sleep(1 * time.Minute)
+	time.Sleep(17 * time.Second)
 	// 缓存更新之后未更新到nodes中.
 	_, err := localCache.LoadOrCreate(test[1].key, test[1].param)
 	if err != nil {

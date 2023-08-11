@@ -3,6 +3,7 @@ package localcache
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"time"
 
@@ -57,10 +58,15 @@ func (l *LocalCache) LoadOrCreate(key string, param any) (any, error) {
 	// 1、查看缓存中是否存在,如果缓存存在,则直接返回.
 	value, isExist := l.nodes.Load(key)
 	if isExist {
-		if !l.checkNodeIsExpire(value) {
+		curNode, ok := value.(*node)
+		if !ok {
+			return nil, fmt.Errorf("nodes laod value is not a node")
+		}
+		if !l.checkNodeIsExpire(curNode) {
+			l.moveNodeToHead(curNode)
 			return value, nil
 		}
-		val, err := l.ForceUpdate(value)
+		val, err := l.forceUpdate(curNode)
 		if err != nil {
 			return nil, err
 		}
@@ -70,13 +76,19 @@ func (l *LocalCache) LoadOrCreate(key string, param any) (any, error) {
 	return l.addNode(key, param)
 }
 
-// ForceUpdate 更新节点值.
-func (l *LocalCache) ForceUpdate(val any) (any, error) {
-	// val 是已经过期的.
-	curNode, ok := val.(*node)
-	if !ok {
-		return nil, fmt.Errorf("val:[%+v] not is a node", val)
-	}
+// moveNodeToHead 移动当前节点到头节点.
+func (l *LocalCache) moveNodeToHead(curNode *node) {
+	tempHead := l.head
+	tempHead.pre = curNode
+	curNode.next = tempHead
+	l.head = curNode
+	// 更新当前节点的前驱节点以及后驱节点的后驱和前驱.
+	pre := curNode.pre
+	pre.next = curNode.next
+}
+
+// forceUpdate 更新节点值.
+func (l *LocalCache) forceUpdate(curNode *node) (any, error) {
 	// 过期重新创建.
 	cacheResult, err := l.addNode(curNode.key, curNode.param)
 	if err != nil {
@@ -86,13 +98,9 @@ func (l *LocalCache) ForceUpdate(val any) (any, error) {
 }
 
 // checkNodeIsExpire 检查当前才节点存储的数据是否过期.
-func (l *LocalCache) checkNodeIsExpire(itr any) bool {
-	curNode, ok := itr.(*node)
-	if !ok {
-		return false
-	}
+func (l *LocalCache) checkNodeIsExpire(curNode *node) bool {
 	nowTime := time.Now().Unix()
-	return nowTime >= curNode.createTime+int64(l.expire)
+	return nowTime >= curNode.createTime+int64(l.expire.Seconds())
 }
 
 // addNode 添加当前节点到队头.
@@ -121,10 +129,11 @@ func (l *LocalCache) addNode(key string, param any) (any, error) {
 	curNode.next = temp
 	// 2、是否删除尾节点.
 	if l.length+1 > l.capacity && l.tail != nil {
-		// 删除的节点会被GC回收.
 		l.nodes.Delete(l.tail.key)
 		tailPre := l.tail.pre
 		l.tail = tailPre
+		// 删除的节点GC回收.
+		runtime.GC()
 	} else {
 		l.addLength()
 	}
