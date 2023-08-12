@@ -1,6 +1,10 @@
 package stack
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/xmopen/golib/pkg/container"
+)
 
 // Stack struct.
 type Stack struct {
@@ -53,4 +57,9 @@ func (s *Stack) Peek() any {
 // Empty return s is a empty stack.
 func (s *Stack) Empty() bool {
 	return s.cursor == -1
+}
+
+// Iterators return a iterators for stack.
+func (s *Stack) Iterators() container.ITerators {
+	panic("no implement")
 }

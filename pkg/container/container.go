@@ -7,3 +7,14 @@ package container
 type Node struct {
 	Val any
 }
+
+// IContainer common container interface
+// todo Iterators
+type IContainer interface {
+	Empty() bool
+	Iterators() ITerators
+}
+
+// ITerators iterators for all container.
+type ITerators interface {
+}
