@@ -64,7 +64,7 @@ func (l *LocalCache) LoadOrCreate(key string, param any) (any, error) {
 		}
 		if !l.checkNodeIsExpire(curNode) {
 			l.moveNodeToHead(curNode)
-			return value, nil
+			return curNode.value, nil
 		}
 		val, err := l.forceUpdate(curNode)
 		if err != nil {
