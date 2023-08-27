@@ -21,6 +21,9 @@ const (
 	RuntimeENVLinuxGlobalConfigPath = "/data/config"
 )
 
+// ParseIPXDBConfigPath 解析IP定位配置文件.
+var ParseIPXDBConfigPath = ""
+
 const defaultConfigFileType = "yaml"
 
 var (
@@ -36,8 +39,10 @@ func init() {
 	switch os {
 	case RuntimeENVWindows:
 		runtimeOSFileSplit = "\\"
+		ParseIPXDBConfigPath = RuntimeENVWindowsGlobalConfigPath + "\\xdb\\ip2region.xdb"
 	case RuntimeENVLinux:
 		runtimeOSFileSplit = "/"
+		ParseIPXDBConfigPath = RuntimeENVLinuxGlobalConfigPath + "/xdb/ip2region.xdb"
 	default:
 		runtimeOSFileSplit = "\\"
 	}
