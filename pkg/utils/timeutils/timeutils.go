@@ -4,6 +4,7 @@ package timeutils
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 const (
@@ -29,4 +30,9 @@ func StringTimeToCNTime(timeStr string) (string, error) {
 		return "", fmt.Errorf("time string is illegal")
 	}
 	return fmt.Sprintf(CNTimeTemplate, datas[0], datas[1], datas[2], hours[0], hours[1]), nil
+}
+
+// NowTime return now time format  2006-01-02 15:04:05
+func NowTime() string {
+	return time.Now().Format(time.DateTime)
 }
