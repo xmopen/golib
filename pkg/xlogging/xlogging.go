@@ -29,6 +29,7 @@ type LogFormat struct {
 
 func init() {
 	globalDefaultLogger = logrus.New()
+	globalDefaultLogger.SetLevel(logrus.TraceLevel)
 	// 添加钩子函数.
 	//out := make([]io.Writer, 0)
 	//out = append(out, os.Stdout)
