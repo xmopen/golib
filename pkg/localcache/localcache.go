@@ -30,7 +30,7 @@ type LocalCache struct {
 }
 
 type node struct {
-	createTime int64  // createTime node create time.
+	createTime int64  // createTime node creational time.
 	key        string // key node key.
 	param      any    // param node func param.
 	value      any    // value node cache value.

@@ -45,10 +45,10 @@ func TestPointer(t *testing.T) {
 //	fmt.Println(x)
 //
 //	// nil unsafe.Pointer.
-//	type Ta struct {
+//	type Ta structural {
 //		ptr unsafe.Pointer
 //	}
-//	type Obj struct {
+//	type Obj structural {
 //		_ [10]uint64
 //	}
 //	// 重要.

@@ -5,6 +5,7 @@ package xlogging
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/sirupsen/logrus"
@@ -30,7 +31,7 @@ type LogFormat struct {
 func init() {
 	globalDefaultLogger = logrus.New()
 	globalDefaultLogger.SetLevel(logrus.TraceLevel)
-	// 添加钩子函数.
+	// 添加钩子函数,暂时保留.
 	//out := make([]io.Writer, 0)
 	//out = append(out, os.Stdout)
 	//if dir, err := os.Getwd(); err == nil {
@@ -40,17 +41,14 @@ func init() {
 	//}
 
 	//globalDefaultLogger.SetOutput(io.MultiWriter(out...))
-	initLog(globalDefaultLogger)
-}
-
-func initLog(logger *Logger) {
 	formatter := &LogFormat{
 		TimestampFormat: "2006-01-02 15:04:05.999",
 		PrintCaller:     true,
 	}
+	globalDefaultLogger.SetFormatter(formatter)
 
-	logger.SetFormatter(formatter)
-	logger.SetReportCaller(true)
+	globalDefaultLogger.SetOutput(os.Stdout)
+	globalDefaultLogger.SetReportCaller(true)
 }
 
 func (l *LogFormat) Format(entry *logrus.Entry) ([]byte, error) {

@@ -6,7 +6,7 @@ import (
 	"github.com/xmopen/golib/pkg/container"
 )
 
-// Stack struct.
+// Stack structural.
 type Stack struct {
 	container []any // container save element.
 	cursor    int   // cursor now.
