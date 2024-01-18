@@ -3,6 +3,7 @@ package container
 
 // IContainer common container interface
 type IContainer interface {
+	Size() int
 	Empty() bool
 	Iterators() ITerators
 }

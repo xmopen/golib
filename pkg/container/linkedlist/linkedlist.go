@@ -29,7 +29,7 @@ func (l *LinkedList) Add(x any) {
 // linkLast 链表尾部添加数据
 func (l *LinkedList) linkLast(x any) {
 	element := &node{
-		val:  x,
+		item: x,
 		next: nil, // 显示初始化
 	}
 	l.size++
@@ -43,18 +43,22 @@ func (l *LinkedList) linkLast(x any) {
 }
 
 // Remove 链表从头部移除节点
-func (l *LinkedList) Remove() {
-	l.removeFirst()
+func (l *LinkedList) Remove() any {
+	removeNode := l.removeFirst()
+	if removeNode == nil {
+		return nil
+	}
+	return removeNode.item
 }
 
-func (l *LinkedList) removeFirst() {
+func (l *LinkedList) removeFirst() *node {
 	if l.first == nil {
-		return
+		return nil
 	}
 	temp := l.first
 	l.first = temp.next
-	temp = nil
 	l.size--
+	return temp
 }
 
 // Next 获取链表头部节点，并不会删除
@@ -63,7 +67,7 @@ func (l *LinkedList) Next() any {
 	if firstNode == nil {
 		return nil
 	}
-	return firstNode.val
+	return firstNode.item
 }
 
 func (l *LinkedList) peekFirst() *node {

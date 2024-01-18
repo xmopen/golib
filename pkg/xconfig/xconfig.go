@@ -35,8 +35,7 @@ var (
 )
 
 func init() {
-	os := runtime.GOOS
-	switch os {
+	switch runtime.GOOS {
 	case RuntimeENVWindows:
 		runtimeOSFileSplit = "\\"
 		ParseIPXDBConfigPath = RuntimeENVWindowsGlobalConfigPath + "\\xdb\\ip2region.xdb"
