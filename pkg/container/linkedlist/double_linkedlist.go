@@ -1,11 +1,14 @@
 package linkedlist
 
 import (
+	"sync"
+
 	"github.com/xmopen/golib/pkg/container"
 )
 
 // DoubleLinkedList 双向链表
 type DoubleLinkedList struct {
+	lock sync.Locker
 	size int
 	head *node
 	tail *node
@@ -14,20 +17,29 @@ type DoubleLinkedList struct {
 // NewDoubleLinkedList 初始化双向链表
 func NewDoubleLinkedList() IDoubleLinkedList {
 	return &DoubleLinkedList{
+		lock: &sync.Mutex{},
 		size: 0,
 		head: nil,
 		tail: nil,
 	}
 }
 
+// Add DoubleLinkedList从尾部插入节点
+func (d *DoubleLinkedList) Add(item any) error {
+	d.PushWithTail(item)
+	return nil
+}
+
 // PushWithHead Push node to head
 func (d *DoubleLinkedList) PushWithHead(x any) {
-	d.size++
 	nowNode := &node{
 		item: x,
 		next: d.head,
 		prev: nil,
 	}
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	d.size++
 	d.head = nowNode
 	if d.tail == nil {
 		d.tail = nowNode
@@ -39,12 +51,14 @@ func (d *DoubleLinkedList) PushWithHead(x any) {
 
 // PushWithTail 向链表尾节点插入数据
 func (d *DoubleLinkedList) PushWithTail(x any) {
-	d.size++
 	nowNode := &node{
 		item: x,
 		next: nil,
 		prev: d.tail,
 	}
+	d.lock.Lock()
+	d.lock.Unlock()
+	d.size++
 	d.tail = nowNode
 	if d.head == nil {
 		d.head = nowNode
@@ -54,11 +68,18 @@ func (d *DoubleLinkedList) PushWithTail(x any) {
 	d.tail.prev.next = d.tail
 }
 
+// Remove DoubleLinkedList 从尾部移除掉某个节点
+func (d *DoubleLinkedList) Remove() any {
+	return d.RemoveFromTail()
+}
+
 // RemoveFromHead 双向链表移除头部节点
 func (d *DoubleLinkedList) RemoveFromHead() any {
 	if d.head == nil {
 		return nil
 	}
+	d.lock.Lock()
+	d.lock.Unlock()
 	d.size--
 	tempHead := d.head
 	d.head = d.head.next
@@ -75,6 +96,8 @@ func (d *DoubleLinkedList) RemoveFromTail() any {
 	if d.tail == nil {
 		return nil
 	}
+	d.lock.Lock()
+	defer d.lock.Unlock()
 	d.size--
 	tempTail := d.tail
 	d.tail = d.tail.prev

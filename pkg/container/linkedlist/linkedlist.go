@@ -1,11 +1,14 @@
 package linkedlist
 
 import (
+	"sync"
+
 	"github.com/xmopen/golib/pkg/container"
 )
 
 // LinkedList go linkedlist.
 type LinkedList struct {
+	lock  sync.Locker
 	size  int // size LinkedList 持有的元素数量
 	first *node
 	last  *node
@@ -13,7 +16,12 @@ type LinkedList struct {
 
 // New 初始化LinkedList结构体.
 func New() ILinkedList {
-	return &LinkedList{}
+	return &LinkedList{
+		lock:  &sync.Mutex{},
+		size:  0,
+		first: nil,
+		last:  nil,
+	}
 }
 
 // Size 链表元素数量
@@ -22,8 +30,9 @@ func (l *LinkedList) Size() int {
 }
 
 // Add 链表添加节点从尾部
-func (l *LinkedList) Add(x any) {
+func (l *LinkedList) Add(x any) error {
 	l.linkLast(x)
+	return nil
 }
 
 // linkLast 链表尾部添加数据
@@ -32,6 +41,8 @@ func (l *LinkedList) linkLast(x any) {
 		item: x,
 		next: nil, // 显示初始化
 	}
+	l.lock.Lock()
+	defer l.lock.Unlock()
 	l.size++
 	if l.last == nil {
 		l.last = element
@@ -55,6 +66,8 @@ func (l *LinkedList) removeFirst() *node {
 	if l.first == nil {
 		return nil
 	}
+	l.lock.Lock()
+	defer l.lock.Unlock()
 	temp := l.first
 	l.first = temp.next
 	l.size--
