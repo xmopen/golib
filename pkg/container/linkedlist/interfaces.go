@@ -25,6 +25,7 @@ type IDoubleLinkedList interface {
 	PeekFromTail() any
 	RemoveFromTail() any
 	RemoveFromHead() any
+	RemoveWithValue(item any) any
 }
 
 type node struct {

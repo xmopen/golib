@@ -52,3 +52,14 @@ func TestDoubleLinkedListPeek(t *testing.T) {
 	fmt.Println(list.PeekFromHead())
 	fmt.Println(list.PeekFromTail())
 }
+
+func TestRemoveWithValue(t *testing.T) {
+	list := NewDoubleLinkedList()
+	list.PushWithHead(2)
+	list.PushWithHead(1)
+	list.PushWithHead(0)
+	// 0 1 2
+	list.RemoveWithValue(1)
+	// 0 2
+	printDoubleLinkedListWithHead(list)
+}

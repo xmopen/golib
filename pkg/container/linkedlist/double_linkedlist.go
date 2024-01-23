@@ -1,6 +1,7 @@
 package linkedlist
 
 import (
+	"reflect"
 	"sync"
 
 	"github.com/xmopen/golib/pkg/container"
@@ -106,6 +107,42 @@ func (d *DoubleLinkedList) RemoveFromTail() any {
 	}
 	d.tail.next = nil
 	return tempTail.item
+}
+
+// RemoveWithValue 通过元素Item来进行Remove
+func (d *DoubleLinkedList) RemoveWithValue(item any) any {
+	if d.head == nil {
+		return nil
+	}
+
+	var targetNode *node
+	d.lock.Lock()
+	defer d.lock.Unlock()
+
+	for head := d.head; head != nil; head = head.next {
+		if !reflect.DeepEqual(head.item, item) {
+			continue
+		}
+		targetNode = head
+		break
+	}
+	if targetNode == nil {
+		return nil
+	}
+	d.size--
+	d.RemoveNode(targetNode)
+	return targetNode
+}
+
+// RemoveNode 删除指定节点，并同时更新前驱和后驱节点
+func (d *DoubleLinkedList) RemoveNode(item *node) {
+	if item.prev != nil {
+		item.prev.next = item.next
+	}
+	if item.next != nil {
+		item.next.prev = item.prev
+	}
+	item = nil
 }
 
 // PeekFromHead Peek Head
